@@ -28,8 +28,9 @@ abstract class Base
 
     protected function headContent()
     {
-        echo "<meta charset='UTF-8'>";
-        echo '  <meta name="viewport" content="width=device-width, initial-scale=1.0">';
+        echo '<meta charset=UTF - 8>';
+        echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+        echo '<link rel="stylesheet" href="assets/index.css">';
         //todo: toevoegen dynamisch css, page title
         echo '<style>
         body {
