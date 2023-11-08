@@ -29,7 +29,19 @@ abstract class Base
     protected function headContent()
     {
         echo "<meta charset='UTF-8'>";
+        echo '  <meta name="viewport" content="width=device-width, initial-scale=1.0">';
         //todo: toevoegen dynamisch css, page title
+        echo '<style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            height: 100vh;
+            margin: 0;
+        }
+        </style>';
     }
 
     protected function endHead()

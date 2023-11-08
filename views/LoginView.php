@@ -12,9 +12,9 @@ class LoginView extends BodyView
                 <form method="post">
                     <input type="hidden" name="page" value="login">
                     <input type="email" id="email" name="email" placeholder="Email" required><br>
-                    <input type="password" id="password" name="password" placeholder="Wachtwoord" required><br>
+                    <input type="password" id="password" name="password" placeholder="Password" required><br>
                     <button type="submit" class="bttn-primary">Login</button>
-                    <a href="index.php?page=home">Terug naar home</a>
+                    <a href="index.php?page=home">Go back</a>
                 </form>
             </div>
         </div>
