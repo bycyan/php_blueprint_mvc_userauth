@@ -1,12 +1,12 @@
 <?php
 require_once "models/UserModel.php";
 require_once "controllers/UserController.php";
-
 class MainController
 {
     protected $db;
     protected $response;
     protected $request;
+    //waarom hier user model aanroepen? kan dat niet simpeler?
     public $userModel;
     public $userController;
 
@@ -23,39 +23,38 @@ class MainController
 
     public function handleMainFlow()
     {
-        $this->request = $this->getRequest();
-        $this->response = $this->validateRequest($this->request);
+
+        $this->getRequest();
+        $this->validateRequest();
         $this->showResponse();
     }
 
-    private function getRequest(): array
+    private function getRequest()
     {
         $requestMethod = ($_SERVER['REQUEST_METHOD'] === 'POST');
         $page = $this->getRequestVar('page', $requestMethod, 'home');
 
-        return [
-            'post' => $requestMethod,
-            'page' => $page,
-        ];
+        $this->request =
+            [
+                'post' => $requestMethod,
+                'page' => $page,
+            ];
     }
 
-    private function validateRequest(array $request): array
+    private function validateRequest()
     {
-        $result = $request;
-        if ($request['post']) {
-            $this->handlePostRequest($result);
+        $this->response = $this->request;
+        if ($this->request['post']) {
+            $this->handlePostRequest(); //Deze veranderen de reponse
         } else {
-            $this->handleGetRequest($result);
+            $this->handleGetRequest();
         }
-        return $result;
     }
 
     private function showResponse()
     {
-        $response = $this->response;
-        $this->handlePageViews($response);
+        $this->handlePageViews();
     }
-
 
     //////////////////////////////////////////////////////////
 
@@ -70,46 +69,51 @@ class MainController
     //HANDLERS
     //////////////////////////////////////////////////////////
 
-    private function handlePostRequest($request)
+    private function handlePostRequest()
     {
         $name = $this->getRequestVar('name', true, '');
         $email = $this->getRequestVar('email', true, '');
         $password = $this->getRequestVar('password', true, '');
 
-        switch ($request['page']) {
+        switch ($this->response['page']) {
             case 'login':
                 $this->userController->loginUser($email);
+                $this->response['page'] = 'home';
                 break;
             case 'register':
-                $this->userController->registerUser($name, $email, $password);
+                $registrationResult = $this->userController->register($name, $email, $password);
+                var_dump($registrationResult);
+                if ($registrationResult === true) {
+                    $this->response['page'] = 'login';
+                }
                 break;
         }
     }
 
-    private function handleGetRequest($request)
+    private function handleGetRequest()
     {
-        switch ($request['page']) {
+        switch ($this->response['page']) {
             case 'logout':
                 $this->response = $this->userController->unsetUser();
                 break;
         }
     }
 
-    private function handlePageViews($response)
+    private function handlePageViews()
     {
         $page = 'home';
-        switch ($response['page']) {
+        switch ($this->response['page']) {
             default:
                 require_once "views/HomeView.php";
-                $page = new HomeView($response);
+                $page = new HomeView($this->response);
                 break;
             case 'login':
                 require_once "views/LoginView.php";
-                $page = new LoginView($response);
+                $page = new LoginView($this->response);
                 break;
             case 'register':
                 require_once "views/RegisterView.php";
-                $page = new RegisterView($response);
+                $page = new RegisterView($this->response);
                 break;
         }
 
