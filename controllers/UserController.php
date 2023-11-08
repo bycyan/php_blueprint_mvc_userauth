@@ -16,7 +16,6 @@ class UserController
 
         // Check if the form has been submitted
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            // Retrieve form data
             $name = $_POST['name'];
             $email = $_POST['email'];
             $password = $_POST['password'];
@@ -48,13 +47,20 @@ class UserController
         }
     }
 
-    public function loginUser($email)
+    public function loginUser($email, $password)
     {
         $userData = $this->userModel->readUser($email);
         if ($userData) {
-            $_SESSION['user'] = $userData[0];
+            $hashedPassword = $userData[0]['password'];
+
+            if (password_verify($password, $hashedPassword)) {
+                $_SESSION['user'] = $userData[0];
+            } else {
+                throw new Exception("Incorrect password");
+            }
         } else {
             throw new Exception("No user found");
+            // You can also redirect the user to an error page or display an error message
         }
     }
 

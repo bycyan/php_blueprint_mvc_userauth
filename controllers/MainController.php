@@ -45,7 +45,7 @@ class MainController
     {
         $this->response = $this->request;
         if ($this->request['post']) {
-            $this->handlePostRequest(); //Deze veranderen de reponse
+            $this->handlePostRequest();
         } else {
             $this->handleGetRequest();
         }
@@ -77,14 +77,14 @@ class MainController
 
         switch ($this->response['page']) {
             case 'login':
-                $this->userController->loginUser($email);
+                $this->userController->loginUser($email, $password);
                 $this->response['page'] = 'home';
                 break;
             case 'register':
                 $registrationResult = $this->userController->register($name, $email, $password);
-                var_dump($registrationResult);
                 if ($registrationResult === true) {
                     $this->response['page'] = 'login';
+                    $this->userController->loginUser($email, $password);
                 }
                 break;
         }
