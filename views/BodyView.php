@@ -62,6 +62,6 @@ abstract class BodyView extends Base
 
     protected function showFooter()
     {
-        echo '<a href="google.com" target="blank">Go to GitHub repository</a>';;
+        echo '<a href="https://github.com/bycyan/php_blueprint_mvc_userauth" target="blank">Go to GitHub repository</a>';;
     }
 }
