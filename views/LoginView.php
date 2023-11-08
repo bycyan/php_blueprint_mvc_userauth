@@ -1,23 +1,34 @@
 <?php
 require_once "BodyView.php";
+require_once "helpers/FormHandler.php";
+
 class LoginView extends BodyView
 {
-    function showMainContent()
+
+    private $formHandler;
+
+    public function __construct()
     {
-        echo '
-        <div class="outer-container center">
-        <div class="inner-container center">
-            <h4>Login to your account</h4>
-            <div class="form-div">
-                <form method="post">
-                    <input type="hidden" name="page" value="login">
-                    <input type="email" id="email" name="email" placeholder="Email" required><br>
-                    <input type="password" id="password" name="password" placeholder="Password" required><br>
-                    <button type="submit" class="bttn-primary">Login</button>
-                    <a href="index.php?page=home">Go back</a>
-                </form>
-            </div>
-        </div>
-        </div>';
+        $postResult  = array(
+            'email' =>  array(
+                'type' => 'email',
+                'label' => 'Your email',
+                'placeholder' => 'Enter your email address',
+                'check_func' => 'validEmail'
+            ),
+            'password' =>  array(
+                'type' => 'password',
+                'label' => 'Your password',
+                'placeholder' => 'Enter your password',
+            ),
+        );
+
+        $this->formHandler = new FormHandler($postResult);
+    }
+
+    public function showMainContent()
+    {
+        echo '<h3>Login to your account</h3>';
+        $this->formHandler->showForm();
     }
 }

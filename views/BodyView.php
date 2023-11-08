@@ -29,7 +29,7 @@ abstract class BodyView extends Base
                             <li><a href="index.php?page=home">Home</a></li>';
 
         if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
-            $name = htmlspecialchars($_SESSION['user'][0]['name']);
+            $name = htmlspecialchars($_SESSION['user']['name']);
             $nameParts = explode(' ', $name);
             $firstName = $nameParts[0];
             $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
