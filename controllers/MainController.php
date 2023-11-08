@@ -6,7 +6,8 @@ class MainController
     protected $db;
     protected $response;
     protected $request;
-    //waarom hier user model aanroepen? kan dat niet simpeler?
+
+    //waarom hier userModel aanroepen? kan dat niet simpeler?
     public $userModel;
     public $userController;
 
@@ -23,7 +24,6 @@ class MainController
 
     public function handleMainFlow()
     {
-
         $this->getRequest();
         $this->validateRequest();
         $this->showResponse();
@@ -74,6 +74,7 @@ class MainController
         $name = $this->getRequestVar('name', true, '');
         $email = $this->getRequestVar('email', true, '');
         $password = $this->getRequestVar('password', true, '');
+        $errorMessages = [];
 
         switch ($this->response['page']) {
             case 'login':
@@ -81,11 +82,16 @@ class MainController
                 $this->response['page'] = 'home';
                 break;
             case 'register':
-                $registrationResult = $this->userController->register($name, $email, $password);
-                if ($registrationResult === true) {
-                    $this->response['page'] = 'login';
-                    $this->userController->loginUser($email, $password);
+                try {
+                    $registrationResult = $this->userController->register($name, $email, $password);
+                    if ($registrationResult === true) {
+                        $this->response['page'] = 'login';
+                        $this->userController->loginUser($email, $password);
+                    }
+                } catch (Exception $e) {
+                    $errorMessages[] = $e->getMessage();
                 }
+                $this->response['errorMessages'] = $errorMessages;
                 break;
         }
     }
@@ -102,10 +108,17 @@ class MainController
     private function handlePageViews()
     {
         $page = 'home';
+        if (isset($this->response['errorMessages'])) {
+            foreach ($this->response['errorMessages'] as $errorMessage) {
+                error_log("Error: " . $errorMessage);
+                echo "<p>Error: $errorMessage</p>";
+            }
+        }
         switch ($this->response['page']) {
             default:
                 require_once "views/HomeView.php";
                 $page = new HomeView($this->response);
+
                 break;
             case 'login':
                 require_once "views/LoginView.php";
@@ -118,6 +131,10 @@ class MainController
         }
 
         if ($page) {
+            if (isset($this->response['errorMessages'])) {
+                foreach ($this->response['errorMessages'] as $errorMessage) {
+                }
+            }
             $page->renderHTML();
         } else {
             echo 'Page not found';

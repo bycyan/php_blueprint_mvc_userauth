@@ -20,29 +20,33 @@ class UserController
             $email = $_POST['email'];
             $password = $_POST['password'];
 
-            // // Validate form data
-            // if (empty($name)) {
-            //     $errorMessages[] = "Username is required.";
-            // }
+            // Validate form data
+            if (empty($name)) {
+                throw new Exception("Username is required.");
+            }
 
-            // if (empty($email)) {
-            //     $errorMessages[] = "Email is required.";
-            // } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            //     $errorMessages[] = "Invalid email format.";
-            // }
+            if (empty($email)) {
+                throw new Exception("Email is required.");
+                $errorMessages[] = "Email is required.";
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errorMessages[] = "Invalid email format.";
+            }
 
-            // if (empty($password)) {
-            //     $errorMessages[] = "Password is required.";
-            // } elseif (strlen($password) < 6) {
-            //     $errorMessages[] = "Password must be at least 6 characters long.";
-            // }
+            if (empty($password)) {
+                $errorMessages[] = "Password is required.";
+            } elseif (strlen($password) < 6) {
+                $errorMessages[] = "Password must be at least 6 characters long.";
+            }
 
-            //Check if the user exists
+            // Check if the user exists
             if (empty($errorMessages)) {
                 if ($this->userModel->createUser($name, $email, $password)) {
                     return true;
+                } else {
+                    throw new Exception("An error occurred during registration. Please try again later.");
                 }
-                //todo: else show error message
+            } else {
+                throw new Exception(implode("<br>", $errorMessages));
             }
         }
     }
@@ -60,7 +64,6 @@ class UserController
             }
         } else {
             throw new Exception("No user found");
-            // You can also redirect the user to an error page or display an error message
         }
     }
 
