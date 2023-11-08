@@ -12,6 +12,7 @@ class LoginView extends BodyView
         $postResult  = array(
             'email' =>  array(
                 'type' => 'email',
+                //label verwijderen
                 'label' => 'Your email',
                 'placeholder' => 'Enter your email address',
                 'check_func' => 'validEmail'

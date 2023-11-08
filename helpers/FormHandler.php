@@ -17,12 +17,12 @@ class FormHandler
                 $this->showResult($postResult);
             } else {
                 //Ik moet hier iets mee.. nu ziet ie niet de page value
-                $this->openForm('page', '');
+                $this->openForm('', '');
                 $this->showFields($postResult);
                 $this->closeForm();
             }
         } else {
-            $this->openForm('page', '');
+            $this->openForm('', '');
             $this->showFields();
             $this->closeForm();
         }
@@ -40,6 +40,7 @@ class FormHandler
     {
         foreach ($this->fields as $fieldName => $fieldInfo) {
             $currentValue = (isset($postResult[$fieldName]) ? $postResult[$fieldName] : '');
+            //hier de velden aan toevoegen net als de placeholder dynamisch wordt aangevuld + matchen aan controller (e.g. name, password etc.)
             echo '<input name=' . $fieldName . ' placeholder="' . $fieldInfo['placeholder'] . '">'  . PHP_EOL;
         }
     }
