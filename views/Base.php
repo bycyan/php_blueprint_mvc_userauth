@@ -40,6 +40,13 @@ abstract class Base
             gap: 50px;
             height: 100vh;
             margin: 0;
+            text-align: center;
+        }
+
+        nav ul{
+            display: flex;
+            gap: 30px;
+            list-style: none;
         }
         </style>';
     }
