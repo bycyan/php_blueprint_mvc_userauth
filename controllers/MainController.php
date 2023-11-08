@@ -83,11 +83,12 @@ class MainController
                 break;
             case 'register':
                 try {
-                    $registrationResult = $this->userController->register($name, $email, $password);
-                    if ($registrationResult === true) {
-                        $this->response['page'] = 'login';
-                        $this->userController->loginUser($email, $password);
-                    }
+                    $this->userController->register($name, $email, $password);
+                    // $registrationResult = $this->userController->register($name, $email, $password);
+                    // if ($registrationResult === true) {
+                    //     // $this->response['page'] = 'login';
+                    //     // $this->userController->loginUser($email, $password);
+                    // }
                 } catch (Exception $e) {
                     $errorMessages[] = $e->getMessage();
                 }
@@ -118,7 +119,6 @@ class MainController
             default:
                 require_once "views/HomeView.php";
                 $page = new HomeView($this->response);
-
                 break;
             case 'login':
                 require_once "views/LoginView.php";

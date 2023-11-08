@@ -16,12 +16,13 @@ class FormHandler
             if ($this->checkFields($postResult)) {
                 $this->showResult($postResult);
             } else {
-                $this->openForm('login', '');
+                //Ik moet hier iets mee.. nu ziet ie niet de page value
+                $this->openForm('page', '');
                 $this->showFields($postResult);
                 $this->closeForm();
             }
         } else {
-            $this->openForm('login', '');
+            $this->openForm('page', '');
             $this->showFields();
             $this->closeForm();
         }
@@ -45,7 +46,7 @@ class FormHandler
 
     private function closeForm(string $submitCaption = "Submit")
     {
-        echo '		<button type="submit" value="submit">' . $submitCaption . '</button>'
+        echo '<button type="submit" value="submit">' . $submitCaption . '</button>'
             . PHP_EOL
             . '	</form>'
             . PHP_EOL;
