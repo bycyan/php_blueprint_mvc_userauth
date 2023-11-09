@@ -26,7 +26,8 @@ abstract class BodyView extends Base
                 <nav class="inner-container navbar">
                     <div class="menu-items">
                         <ul>
-                            <li><a href="index.php?page=home">Home</a></li>';
+                            <li><a href="index.php?page=home">Home</a></li>
+                            <li><a href="index.php?page=contact">Contact</a></li>';
 
         if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
             $name = htmlspecialchars($_SESSION['user']['name']);
@@ -37,6 +38,7 @@ abstract class BodyView extends Base
             echo '<li><a href="index.php?page=logout">logout: ' . $firstName . '</a></li>';
         } else
             echo '
+                            
                             <li><a href="index.php?page=login">Login</a></li>
                             <li><a href="index.php?page=register">Register</a></li>
                         </ul>

@@ -39,8 +39,11 @@ class FormHandler
     {
         foreach ($this->fields as $fieldName => $fieldInfo) {
             $currentValue = (isset($postResult[$fieldName]) ? $postResult[$fieldName] : '');
-            //hier de velden aan toevoegen net als de placeholder dynamisch wordt aangevuld + matchen aan controller (e.g. name, password etc.)
-            echo '<input name=' . $fieldName . ' placeholder="' . $fieldInfo['placeholder'] . '">'  . PHP_EOL;
+            if ($fieldInfo['type'] === 'textarea') {
+                echo '<textarea name="' . $fieldName . '" placeholder="' . $fieldInfo['placeholder'] . '">' . $currentValue . '</textarea>' . PHP_EOL;
+            } else {
+                echo '<input name="' . $fieldName . '" type="' . $fieldInfo['type'] . '" placeholder="' . $fieldInfo['placeholder'] . '" value="' . $currentValue . '">' . PHP_EOL;
+            }
         }
     }
 

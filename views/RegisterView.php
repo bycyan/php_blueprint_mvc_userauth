@@ -11,19 +11,16 @@ class RegisterView extends BodyView
         $postResult  = array(
             'name' =>  array(
                 'type' => 'name',
-                'label' => 'Your Name',
                 'placeholder' => 'Enter your name',
                 'check_func' => 'validName'
             ),
             'email' =>  array(
                 'type' => 'email',
-                'label' => 'Your email',
                 'placeholder' => 'Enter your email address',
                 'check_func' => 'validEmail'
             ),
             'password' =>  array(
                 'type' => 'password',
-                'label' => 'Your password',
                 'placeholder' => 'Enter your password',
             ),
         );

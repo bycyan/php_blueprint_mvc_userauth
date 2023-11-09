@@ -41,6 +41,22 @@ form input{
     border-radius: 5px;
     padding: 10px;
     width: 400px;
+    font-family: 'Montserrat', sans-serif;
+
+}
+
+form textarea{
+    margin: 0;
+    background-color: #21262d;
+    color: white;
+    border: 1px solid #484f58;
+    border-radius: 5px;
+    padding: 10px;
+    width: 400px;
+    height: 200px;
+    resize: none;
+    font-family: 'Montserrat', sans-serif;
+
 }
 
 form button{

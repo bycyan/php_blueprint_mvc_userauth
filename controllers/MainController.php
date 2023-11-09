@@ -128,6 +128,10 @@ class MainController
                 require_once "views/RegisterView.php";
                 $page = new RegisterView($this->response);
                 break;
+            case 'contact':
+                require_once "views/ContactView.php";
+                $page = new ContactView($this->response);
+                break;
         }
 
         if ($page) {
