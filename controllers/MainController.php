@@ -114,6 +114,8 @@ class MainController
     private function handlePageViews()
     {
         $page = 'home';
+
+        //ERROR MESSAGES FROM USER CONTROLLER
         if (isset($this->response['errorMessages'])) {
             foreach ($this->response['errorMessages'] as $errorMessage) {
                 error_log("Error: " . $errorMessage);
@@ -136,12 +138,7 @@ class MainController
                 $page = $this->handleFormViewInst($this->response['page']);
                 break;
         }
-
         if ($page) {
-            if (isset($this->response['errorMessages'])) {
-                foreach ($this->response['errorMessages'] as $errorMessage) {
-                }
-            }
             $page->renderHTML();
         } else {
             echo 'Page not found';

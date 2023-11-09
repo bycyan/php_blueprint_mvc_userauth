@@ -1,1 +1,8 @@
-# php_blueprint_mvc_userauth
+# PHP MVC Boilerplate 2023
+
+### Includes
+
+- User authentication
+- Dynamic form builder
+- Dynamic error handling
+- Database configuration
