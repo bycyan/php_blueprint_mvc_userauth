@@ -1,6 +1,7 @@
 <?php
 require_once "models/UserModel.php";
 require_once "controllers/UserController.php";
+require_once "helpers/FormHandler.php";
 class MainController
 {
     protected $db;
@@ -16,6 +17,7 @@ class MainController
         $this->db = $db;
         $this->userModel = new UserModel($db);
         $this->userController = new UserController($this->userModel);
+        $this->formHandler = new FormHandler([]);
     }
 
     //////////////////////////////////////////////////////////
@@ -81,12 +83,13 @@ class MainController
                 $this->userController->loginUser($email, $password);
                 $this->response['page'] = 'home';
                 break;
+
             case 'register':
                 try {
                     $registrationResult = $this->userController->register($name, $email, $password);
                     if ($registrationResult === true) {
                         $this->response['page'] = 'login';
-                        $loginResult = $this->userController->loginUser($email, $password);
+                        $loginResult = $this->userController->loginUser($email, $password, $this->formHandler);
                         if ($loginResult === true) {
                             $this->response['page'] = 'home';
                         } else {

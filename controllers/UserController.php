@@ -53,18 +53,30 @@ class UserController
 
     public function loginUser($email, $password)
     {
-        $userData = $this->userModel->readUser($email);
-        if ($userData) {
-            $hashedPassword = $userData[0]['password'];
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $email = $_POST['email'];
+            $password = $_POST['password'];
 
-            if (password_verify($password, $hashedPassword)) {
-                $_SESSION['user'] = $userData[0];
-                return true;
-            } else {
-                throw new Exception("Incorrect password");
+            try {
+                if (empty($email)) {
+                    throw new Exception("Email is required!");
+                }
+            } catch (Exception $e) {
+                $error->displayErrorMessage($e->getMessage());
             }
         } else {
-            throw new Exception("No user found");
+            $userData = $this->userModel->readUser($email);
+            if ($userData) {
+                $hashedPassword = $userData[0]['password'];
+
+                if (password_verify($password, $hashedPassword)) {
+                    $_SESSION['user'] = $userData[0];
+                    return true;
+                } else {
+                    throw new Exception("Incorrect password");
+                }
+            } else {
+            }
         }
     }
 
