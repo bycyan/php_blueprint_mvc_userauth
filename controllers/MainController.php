@@ -120,22 +120,23 @@ class MainController
                 echo "<p>Error: $errorMessage</p>";
             }
         }
+
         switch ($this->response['page']) {
             default:
                 require_once "views/HomeView.php";
                 $page = new HomeView($this->response);
                 break;
-            case 'login':
-                require_once "views/LoginView.php";
-                $page = new LoginView($this->response);
-                break;
             case 'register':
-                require_once "views/RegisterView.php";
-                $page = new RegisterView($this->response);
+                require_once "views/FormView.php";
+                $page = new FormView($this->response['page']);
                 break;
             case 'contact':
-                require_once "views/ContactView.php";
-                $page = new ContactView($this->response);
+                require_once "views/FormView.php";
+                $page = new FormView($this->response['page']);
+                break;
+            case 'login':
+                require_once "views/FormView.php";
+                $page = new FormView($this->response['page']);
                 break;
         }
 
