@@ -83,12 +83,17 @@ class MainController
                 break;
             case 'register':
                 try {
-                    $this->userController->register($name, $email, $password);
-                    // $registrationResult = $this->userController->register($name, $email, $password);
-                    // if ($registrationResult === true) {
-                    //     // $this->response['page'] = 'login';
-                    //     // $this->userController->loginUser($email, $password);
-                    // }
+                    $registrationResult = $this->userController->register($name, $email, $password);
+                    if ($registrationResult === true) {
+                        $this->response['page'] = 'login';
+                        $loginResult = $this->userController->loginUser($email, $password);
+                        if ($loginResult === true) {
+                            $this->response['page'] = 'home';
+                        } else {
+                            $errorMessages[] = "Login failed after registration. Please try logging in manually.";
+                            $this->response['errorMessages'] = $errorMessages;
+                        }
+                    }
                 } catch (Exception $e) {
                     $errorMessages[] = $e->getMessage();
                 }

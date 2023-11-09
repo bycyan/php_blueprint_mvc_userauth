@@ -59,6 +59,7 @@ class UserController
 
             if (password_verify($password, $hashedPassword)) {
                 $_SESSION['user'] = $userData[0];
+                return true;
             } else {
                 throw new Exception("Incorrect password");
             }

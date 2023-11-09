@@ -15,8 +15,7 @@ class UserModel extends Database
                 ':password' => $hashedPassword
             ];
             $stmt = $this->createData($sqlQuery, $data);
-            // return $stmt->rowCount() > 0;
-            return $stmt;
+            return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             throw new Exception("Error: " . $e->getMessage());
         }
