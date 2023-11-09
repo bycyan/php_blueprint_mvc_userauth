@@ -9,20 +9,19 @@ class FormHandler
         $this->fields = $fields;
     }
 
-    public function showForm()
+    public function showForm(string $page = '')
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $postResult = [];
             if ($this->checkFields($postResult)) {
                 $this->showResult($postResult);
             } else {
-                //Ik moet hier iets mee.. nu ziet ie niet de page value
-                $this->openForm('', '');
+                $this->openForm($page, '');
                 $this->showFields($postResult);
                 $this->closeForm();
             }
         } else {
-            $this->openForm('', '');
+            $this->openForm($page, '');
             $this->showFields();
             $this->closeForm();
         }

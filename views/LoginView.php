@@ -30,6 +30,6 @@ class LoginView extends BodyView
     public function showMainContent()
     {
         echo '<h3>Login to your account</h3>';
-        $this->formHandler->showForm();
+        $this->formHandler->showForm('login');
     }
 }

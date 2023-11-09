@@ -34,6 +34,6 @@ class RegisterView extends BodyView
     public function showMainContent()
     {
         echo '<h3>Register your account</h3>';
-        $this->formHandler->showForm();
+        $this->formHandler->showForm('register');
     }
 }
