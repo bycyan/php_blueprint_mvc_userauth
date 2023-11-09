@@ -22,8 +22,7 @@ abstract class BodyView extends Base
     {
 
         echo '
-            <div class="outer-container navbar-outer center">
-                <nav class="inner-container navbar">
+                <nav>
                     <div class="menu-items">
                         <ul>
                             <li><a href="index.php?page=home">Home</a></li>
@@ -43,8 +42,7 @@ abstract class BodyView extends Base
                             <li><a href="index.php?page=register">Register</a></li>
                         </ul>
                     </div>
-                </nav>
-            </div>';
+                </nav>';
     }
 
     protected function beginMainContent()
