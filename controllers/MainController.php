@@ -127,16 +127,13 @@ class MainController
                 $page = new HomeView($this->response);
                 break;
             case 'register':
-                require_once "views/FormView.php";
-                $page = new FormView($this->response['page']);
+                $page = $this->handleFormViewInst($this->response['page']);
                 break;
             case 'contact':
-                require_once "views/FormView.php";
-                $page = new FormView($this->response['page']);
+                $page = $this->handleFormViewInst($this->response['page']);
                 break;
             case 'login':
-                require_once "views/FormView.php";
-                $page = new FormView($this->response['page']);
+                $page = $this->handleFormViewInst($this->response['page']);
                 break;
         }
 
@@ -149,5 +146,11 @@ class MainController
         } else {
             echo 'Page not found';
         }
+    }
+
+    private function handleFormViewInst($page)
+    {
+        require_once "views/FormView.php";
+        return new FormView($page);
     }
 }
