@@ -3,10 +3,12 @@
 class FormHandler
 {
     private $fields;
+    private $errors = array();
 
-    public function __construct(array $fields)
+    public function __construct(array $fields, &$errors)
     {
         $this->fields = $fields;
+        $this->errors = &$errors;
     }
 
     public function showForm(string $page = '')
@@ -39,20 +41,17 @@ class FormHandler
     {
         foreach ($this->fields as $fieldName => $fieldInfo) {
             $currentValue = (isset($postResult[$fieldName]) ? $postResult[$fieldName] : '');
+
             if ($fieldInfo['type'] === 'textarea') {
                 echo '<textarea name="' . $fieldName . '" placeholder="' . $fieldInfo['placeholder'] . '">' . $currentValue . '</textarea>' . PHP_EOL;
             } else {
                 echo '<input name="' . $fieldName . '" type="' . $fieldInfo['type'] . '" placeholder="' . $fieldInfo['placeholder'] . '" value="' . $currentValue . '">' . PHP_EOL;
-                if (isset($fieldInfo['error'])) {
-                    echo '<p style="color: red;">' . $fieldInfo['error'] . '</p>';
-                }
+            }
+
+            if (!empty($this->errors[$fieldName])) {
+                echo '<p style="color: red;">' . $this->errors[$fieldName] . '</p>';
             }
         }
-    }
-
-    public function displayErrorMessage($message)
-    {
-        echo '<p style="color: red;">' . $message . '</p>';
     }
 
     private function closeForm(string $submitCaption = "Submit")

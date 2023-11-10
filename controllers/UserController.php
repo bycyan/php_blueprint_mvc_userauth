@@ -1,13 +1,19 @@
 <?php
 require_once "models/UserModel.php";
+require_once "helpers/FormHandler.php";
 class UserController
 {
 
     protected $userModel;
+    private $errors = array();
+    private $fields;
+    private $formHandler;
 
     public function __construct(UserModel $userModel)
     {
         $this->userModel = $userModel;
+        $this->fields = [];
+        $formHandler = new FormHandler($this->fields, $this->errors);
     }
 
     public function register($name, $email, $password)
@@ -51,21 +57,18 @@ class UserController
         }
     }
 
-    public function loginUser($email, $password)
+    public function loginUser()
     {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $email = $_POST['email'];
-            $password = $_POST['password'];
+        $email = isset($_POST['email']) ? $_POST['email'] : '';
+        $password = isset($_POST['password']) ? $_POST['password'] : '';
 
-            try {
-                if (empty($email)) {
-                    throw new Exception("Email is required!");
-                }
-            } catch (Exception $e) {
-                $error->displayErrorMessage($e->getMessage());
+        try {
+            if (empty($email)) {
+                throw new Exception("Email is required!");
             }
-        } else {
+
             $userData = $this->userModel->readUser($email);
+
             if ($userData) {
                 $hashedPassword = $userData[0]['password'];
 
@@ -75,10 +78,13 @@ class UserController
                 } else {
                     throw new Exception("Incorrect password");
                 }
-            } else {
             }
+        } catch (Exception $e) {
+            $this->errors[] = $e->getMessage();
+            $this->formHandler->showForm('login');
         }
     }
+
 
     public function unsetUser()
     {

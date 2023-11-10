@@ -11,7 +11,7 @@ class FormView extends BodyView
     {
         $this->page = $page;
         $postResult = $this->getFormFieldsByPage($page);
-        $this->formHandler = new FormHandler($postResult);
+        $this->formHandler = new FormHandler($postResult, $errors);
     }
 
     public function showMainContent()
@@ -27,7 +27,6 @@ class FormView extends BodyView
                     'email' =>  array(
                         'type' => 'email',
                         'placeholder' => 'Enter your email address',
-                        'check_func' => 'validEmail'
                     ),
                     'password' =>  array(
                         'type' => 'password',
@@ -39,12 +38,10 @@ class FormView extends BodyView
                     'name' =>  array(
                         'type' => 'name',
                         'placeholder' => 'Enter your name',
-                        'check_func' => 'validName'
                     ),
                     'email' =>  array(
                         'type' => 'email',
                         'placeholder' => 'Enter your email address',
-                        'check_func' => 'validEmail'
                     ),
                     'password' =>  array(
                         'type' => 'password',
@@ -76,33 +73,18 @@ class FormView extends BodyView
         switch ($this->page) {
             case 'login':
                 echo '<h3>Login to your account</h3>';
-                $this->formHandler->showForm('login', $this->getStoredValues('login'));
+                $this->formHandler->showForm('login');
                 break;
             case 'register':
                 echo '<h3>Register your account</h3>';
-                $this->formHandler->showForm('register', $this->getStoredValues('register'));
+                $this->formHandler->showForm('register');
                 break;
             case 'contact':
                 echo '<h3>Ask your question</h3>';
-                $this->formHandler->showForm('contact', $this->getStoredValues('contact'));
+                $this->formHandler->showForm('contact');
                 break;
             default:
                 break;
         }
     }
-
-    private function getStoredValues($formType)
-    {
-        if (isset($_SESSION['form_values'][$formType])) {
-            return $_SESSION['form_values'][$formType];
-        } elseif (isset($_REQUEST['post']) && isset($_REQUEST['post'][$formType])) {
-            return $_REQUEST['post'][$formType];
-        }
-        return [];
-    }
-
-    // public function setStoredValues($formType, $values)
-    // {
-    //     $_SESSION['form_values'][$formType] = $values;
-    // }
 }

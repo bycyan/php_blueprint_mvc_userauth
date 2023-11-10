@@ -17,7 +17,6 @@ class MainController
         $this->db = $db;
         $this->userModel = new UserModel($db);
         $this->userController = new UserController($this->userModel);
-        $this->formHandler = new FormHandler([]);
     }
 
     //////////////////////////////////////////////////////////
@@ -76,12 +75,11 @@ class MainController
         $name = $this->getRequestVar('name', true, '');
         $email = $this->getRequestVar('email', true, '');
         $password = $this->getRequestVar('password', true, '');
-        $errorMessages = [];
 
         switch ($this->response['page']) {
             case 'login':
                 $this->userController->loginUser($email, $password);
-                $this->response['page'] = 'home';
+                //todo: if succes > $this->response['page'] = 'home';
                 break;
 
             case 'register':
@@ -89,7 +87,7 @@ class MainController
                     $registrationResult = $this->userController->register($name, $email, $password);
                     if ($registrationResult === true) {
                         $this->response['page'] = 'login';
-                        $loginResult = $this->userController->loginUser($email, $password, $this->formHandler);
+                        $loginResult = $this->userController->loginUser($email, $password);
                         if ($loginResult === true) {
                             $this->response['page'] = 'home';
                         } else {
