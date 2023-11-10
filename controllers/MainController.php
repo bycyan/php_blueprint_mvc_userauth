@@ -98,7 +98,7 @@ class MainController
                 } catch (Exception $e) {
                     $errorMessages[] = $e->getMessage();
                 }
-                $this->response['errorMessages'] = $errorMessages;
+                // $this->response['errorMessages'] = $errorMessages;
                 break;
         }
     }
