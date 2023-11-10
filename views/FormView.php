@@ -6,12 +6,14 @@ class FormView extends BodyView
 {
     private $formHandler;
     private $page;
+    private $errors;
 
     public function __construct($page)
     {
         $this->page = $page;
         $postResult = $this->getFormFieldsByPage($page);
-        $this->formHandler = new FormHandler($postResult, $errors);
+        $this->errors = [];
+        $this->formHandler = new FormHandler($postResult, $this->errors);
     }
 
     public function showMainContent()
@@ -23,7 +25,7 @@ class FormView extends BodyView
     {
         switch ($page) {
             case 'login':
-                return [
+                $fields = [
                     'email' =>  array(
                         'type' => 'email',
                         'placeholder' => 'Enter your email address',
@@ -33,6 +35,11 @@ class FormView extends BodyView
                         'placeholder' => 'Enter your password',
                     ),
                 ];
+                if (!empty($this->errors['login'])) {
+                    $fields['error'] = $this->errors['login'];
+                }
+
+                return $fields;
             case 'register':
                 return [
                     'name' =>  array(

@@ -20,13 +20,12 @@ abstract class BodyView extends Base
 
     protected function showNav()
     {
-
         echo '
-                <nav>
-                    <div class="menu-items">
-                        <ul>
-                            <li><a href="index.php?page=home">Home</a></li>
-                            <li><a href="index.php?page=contact">Contact</a></li>';
+        <nav>
+            <div class="menu-items">
+                <ul>
+                    <li><a href="index.php?page=home">Home</a></li>
+                    <li><a href="index.php?page=contact">Contact</a></li>';
 
         if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
             $name = htmlspecialchars($_SESSION['user']['name']);
@@ -35,15 +34,18 @@ abstract class BodyView extends Base
             $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
 
             echo '<li><a href="index.php?page=logout">logout: ' . $firstName . '</a></li>';
-        } else
+        } else {
             echo '
-                            
-                            <li><a href="index.php?page=login">Login</a></li>
-                            <li><a href="index.php?page=register">Register</a></li>
-                        </ul>
-                    </div>
-                </nav>';
+                    <li><a href="index.php?page=login">Login</a></li>
+                    <li><a href="index.php?page=register">Register</a></li>';
+        }
+
+        echo '
+                </ul>
+            </div>
+        </nav>';
     }
+
 
     protected function beginMainContent()
     {

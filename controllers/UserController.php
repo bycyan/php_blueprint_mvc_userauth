@@ -13,7 +13,7 @@ class UserController
     {
         $this->userModel = $userModel;
         $this->fields = [];
-        $formHandler = new FormHandler($this->fields, $this->errors);
+        $this->formHandler = new FormHandler($this->fields, $this->errors);
     }
 
     public function register($name, $email, $password)
@@ -81,7 +81,7 @@ class UserController
             }
         } catch (Exception $e) {
             $this->errors[] = $e->getMessage();
-            $this->formHandler->showForm('login');
+            // $this->formHandler->showForm('login');
         }
     }
 
