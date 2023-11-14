@@ -1,26 +1,19 @@
 <?php
-require_once "models/UserModel.php";
 require_once "controllers/UserController.php";
-require_once "helpers/FormHandler.php";
 class MainController
 {
     protected $db;
     protected $response;
     protected $request;
-
-    //waarom hier userModel aanroepen? kan dat niet simpeler?
-    public $userModel;
-    public $userController;
+    protected $userController;
 
     public function __construct(Database $db)
     {
-        $this->db = $db;
-        $this->userModel = new UserModel($db);
-        $this->userController = new UserController($this->userModel);
+        $this->userController = new UserController(new UserModel($db));
     }
 
     //////////////////////////////////////////////////////////
-    //MAIN FLOW
+    //START MAIN FLOW
     //////////////////////////////////////////////////////////
 
     public function handleMainFlow()
@@ -29,6 +22,10 @@ class MainController
         $this->validateRequest();
         $this->showResponse();
     }
+
+    //////////////////////////////////////////////////////////
+    //GET, VALIDATE, SHOW
+    //////////////////////////////////////////////////////////
 
     private function getRequest()
     {
@@ -58,8 +55,10 @@ class MainController
     }
 
     //////////////////////////////////////////////////////////
+    //END MAIN FLOW
+    //////////////////////////////////////////////////////////
 
-    public function getRequestVar(string $key, bool $frompost, $default = "", bool $asnumber = FALSE)
+    private function getRequestVar(string $key, bool $frompost, $default = "", bool $asnumber = FALSE)
     {
         $filter = $asnumber ? FILTER_SANITIZE_NUMBER_FLOAT : FILTER_SANITIZE_FULL_SPECIAL_CHARS;
         $result = filter_input(($frompost ? INPUT_POST : INPUT_GET), $key, $filter);
@@ -67,9 +66,8 @@ class MainController
     }
 
     //////////////////////////////////////////////////////////
-    //HANDLERS
+    //PAGE VIEW HANDLERS
     //////////////////////////////////////////////////////////
-    public $errorMessage = "";
 
     private function handlePostRequest()
     {
@@ -80,30 +78,28 @@ class MainController
         switch ($this->response['page']) {
             case 'login':
                 try {
-                    //todo: if login succes > $this->response['page'] = 'home';
-                    $this->userController->loginUser($email, $password);
+                    $data = $this->userController->loginUser($email, $password);
+                    if ($data === true) {
+                        $this->response['page'] = 'home';
+                    }
                 } catch (Exception $errors) {
-                    $this->errorMessage = $errors->getMessage();
+                    $this->response['errors'] = $errors->getMessage();
                 }
-
-
                 break;
 
             case 'register':
                 try {
-                    $registrationResult = $this->userController->registerUser($name, $email, $password);
-                    if ($registrationResult === true) {
-                        $this->response['page'] = 'login';
-                        $loginResult = $this->userController->loginUser($email, $password);
-                        if ($loginResult === true) {
+                    $data = $this->userController->registerUser($name, $email, $password);
+                    if ($data === true) {
+                        $loginAfterRegister = $this->userController->loginUser($email, $password);
+                        if ($loginAfterRegister === true) {
                             $this->response['page'] = 'home';
                         } else {
-                            $errorMessages[] = "Login failed after registration. Please try logging in manually.";
-                            $this->response['errorMessages'] = $errorMessages;
+                            throw new Exception("Login failed after registration. Please try logging in manually.");
                         }
                     }
                 } catch (Exception $errors) {
-                    $this->errorMessage = $errors->getMessage();
+                    $this->response['errors'] = $errors->getMessage();
                 }
                 break;
         }
@@ -120,22 +116,18 @@ class MainController
 
     private function handlePageViews()
     {
+        $errors = isset($this->response['errors']) ? $this->response['errors'] : [];
+
         $page = 'home';
         switch ($this->response['page']) {
             default:
                 require_once "views/HomeView.php";
                 $page = new HomeView($this->response);
                 break;
-            case 'register':
-                $page = $this->handleFormViewInst($this->response['page']);
-                echo $this->errorMessage;
-                break;
-            case 'contact':
-                $page = $this->handleFormViewInst($this->response['page']);
-                break;
             case 'login':
-                $page = $this->handleFormViewInst($this->response['page']);
-                echo $this->errorMessage;
+            case 'register':
+            case 'contact':
+                $page = $this->handleFormViewInst($this->response['page'], $errors);
                 break;
         }
         if ($page) {
@@ -145,9 +137,10 @@ class MainController
         }
     }
 
-    private function handleFormViewInst($page)
+    private function handleFormViewInst($page, $errors)
     {
         require_once "views/FormView.php";
-        return new FormView($page);
+        $errorsArray = is_array($errors) ? $errors : [$errors];
+        return new FormView($page, $errorsArray);
     }
 }

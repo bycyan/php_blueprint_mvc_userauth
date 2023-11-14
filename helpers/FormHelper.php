@@ -1,32 +1,22 @@
 <?php
-
-class FormHandler
+class FormHelper
 {
-    protected $fields;
-    protected $errors = array();
 
-    public function __construct(array $fields, &$errors)
+    protected $fields;
+    protected $errors;
+
+    public function __construct(array $fields, array $errors)
     {
         $this->fields = $fields;
-        $this->errors = &$errors;
+        $this->errors = $errors;
     }
 
     public function showForm(string $page = '')
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $postResult = [];
-            if ($this->checkFields($postResult)) {
-                $this->showResult($postResult);
-            } else {
-                $this->openForm($page, '');
-                $this->showFields($postResult);
-                $this->closeForm();
-            }
-        } else {
-            $this->openForm($page, '');
-            $this->showFields();
-            $this->closeForm();
-        }
+        $postResult = [];
+        $this->openForm($page, '');
+        $this->showFields($postResult);
+        $this->closeForm();
     }
 
     private function openForm(string $page, string $action, string $method = "POST")
@@ -39,6 +29,8 @@ class FormHandler
 
     private function showFields(array $postResult = [])
     {
+        $errorMessages = [];
+
         foreach ($this->fields as $fieldName => $fieldInfo) {
             $currentValue = (isset($postResult[$fieldName]) ? $postResult[$fieldName] : '');
 
@@ -47,9 +39,8 @@ class FormHandler
             } else {
                 echo '<input name="' . $fieldName . '" type="' . $fieldInfo['type'] . '" placeholder="' . $fieldInfo['placeholder'] . '" value="' . $currentValue . '">' . PHP_EOL;
             }
-
-            if (!empty($this->errors[$fieldName])) {
-                echo '<p style="color: red;">' . $this->errors[$fieldName] . '</p>';
+            foreach ($this->errors as $error) {
+                echo $error . '<br>';
             }
         }
     }
@@ -60,15 +51,5 @@ class FormHandler
             . PHP_EOL
             . '	</form>'
             . PHP_EOL;
-    }
-
-    private function checkFields(array &$postResult)
-    {
-        // ... (existing checkFields function remains unchanged)
-    }
-
-    private function showResult(array $postResult)
-    {
-        // ... (existing showResult function remains unchanged)
     }
 }

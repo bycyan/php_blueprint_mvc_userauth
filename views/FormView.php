@@ -1,19 +1,19 @@
 <?php
 require_once "BodyView.php";
-require_once "helpers/FormHandler.php";
+require_once "helpers/FormHelper.php";
 
 class FormView extends BodyView
 {
-    private $formHandler;
-    private $page;
-    private $errors;
+    protected $formHelper;
+    protected $page;
+    protected $errors;
 
-    public function __construct($page)
+    public function __construct($page, array $errors)
     {
         $this->page = $page;
+        $this->errors = $errors;
         $postResult = $this->getFormFieldsByPage($page);
-        $this->errors = [];
-        $this->formHandler = new FormHandler($postResult, $this->errors);
+        $this->formHelper = new FormHelper($postResult, $this->errors);
     }
 
     public function showMainContent()
@@ -35,10 +35,6 @@ class FormView extends BodyView
                         'placeholder' => 'Enter your password',
                     ),
                 ];
-                if (!empty($this->errors['login'])) {
-                    $fields['error'] = $this->errors['login'];
-                }
-
                 return $fields;
             case 'register':
                 return [
@@ -80,15 +76,15 @@ class FormView extends BodyView
         switch ($this->page) {
             case 'login':
                 echo '<h3>Login to your account</h3>';
-                $this->formHandler->showForm('login');
+                $this->formHelper->showForm('login');
                 break;
             case 'register':
                 echo '<h3>Register your account</h3>';
-                $this->formHandler->showForm('register');
+                $this->formHelper->showForm('register');
                 break;
             case 'contact':
                 echo '<h3>Ask your question</h3>';
-                $this->formHandler->showForm('contact');
+                $this->formHelper->showForm('contact');
                 break;
             default:
                 break;

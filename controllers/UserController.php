@@ -1,6 +1,5 @@
 <?php
 require_once "models/UserModel.php";
-require_once "helpers/FormHandler.php";
 
 class UserController
 {
@@ -10,6 +9,11 @@ class UserController
     public function __construct(UserModel $userModel)
     {
         $this->userModel = $userModel;
+    }
+
+    public function getUserModel()
+    {
+        return $this->userModel;
     }
 
     public function registerUser($name, $email, $password)
@@ -26,27 +30,25 @@ class UserController
             if (empty($email)) {
                 throw new Exception("Email is required.");
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                throw new Exception("Invalid email format.");
+                throw new Exception("Invalid email format."); // meegeven bij welk veld dit hoort
             }
 
-            $existingUser = $this->userModel->readUser($email);
+            $doesUserExist = $this->userModel->readUser($email);
 
-            if ($existingUser) {
+            if ($doesUserExist) {
                 throw new Exception("Email already registered. Please choose a different email.");
             }
 
             if (empty($password)) {
-                $errorMessages[] = "Password is required.";
+                throw new Exception("Password is required.");
             } elseif (strlen($password) < 6) {
                 throw new Exception("Password must be at least 6 characters long.");
             }
 
-            if (empty($errorMessages)) {
-                if ($this->userModel->createUser($name, $email, $password)) {
-                    return true;
-                } else {
-                    throw new Exception("An error occurred during registration. Please try again later.");
-                }
+            if ($this->userModel->createUser($name, $email, $password)) {
+                return true;
+            } else {
+                throw new Exception("An error occurred during registration. Please try again later.");
             }
         }
     }
@@ -65,23 +67,21 @@ class UserController
                 throw new Exception("Password is required!");
             }
 
-            $userData = $this->userModel->readUser($email);
+            $user = $this->userModel->readUser($email);
 
-            if (!$userData) {
+            if (!$user) {
                 throw new Exception("User not found!");
             }
 
-            $hashedPassword = $userData[0]['password'];
+            $hashedPassword = $user[0]['password'];
             if (password_verify($password, $hashedPassword)) {
-                $_SESSION['user'] = $userData[0];
+                $_SESSION['user'] = $user[0];
                 return true;
             } else {
                 throw new Exception("Incorrect password");
             }
         }
     }
-
-
 
     public function unsetUser()
     {
