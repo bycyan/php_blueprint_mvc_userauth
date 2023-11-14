@@ -2,8 +2,8 @@
 
 class FormHandler
 {
-    private $fields;
-    private $errors = array();
+    protected $fields;
+    protected $errors = array();
 
     public function __construct(array $fields, &$errors)
     {

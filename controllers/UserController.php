@@ -1,89 +1,86 @@
 <?php
 require_once "models/UserModel.php";
 require_once "helpers/FormHandler.php";
+
 class UserController
 {
 
     protected $userModel;
-    private $errors = array();
-    private $fields;
-    private $formHandler;
 
     public function __construct(UserModel $userModel)
     {
         $this->userModel = $userModel;
-        $this->fields = [];
-        $this->formHandler = new FormHandler($this->fields, $this->errors);
     }
 
-    public function register($name, $email, $password)
+    public function registerUser($name, $email, $password)
     {
-        $errorMessages = [];
-
-        // Check if the form has been submitted
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $name = $_POST['name'];
-            $email = $_POST['email'];
-            $password = $_POST['password'];
+            $name = isset($_POST['name']) ? $_POST['name'] : '';
+            $email = isset($_POST['email']) ? $_POST['email'] : '';
+            $password = isset($_POST['password']) ? $_POST['password'] : '';
 
-            // Validate form data
             if (empty($name)) {
                 throw new Exception("Username is required.");
             }
 
             if (empty($email)) {
                 throw new Exception("Email is required.");
-                $errorMessages[] = "Email is required.";
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errorMessages[] = "Invalid email format.";
+                throw new Exception("Invalid email format.");
+            }
+
+            $existingUser = $this->userModel->readUser($email);
+
+            if ($existingUser) {
+                throw new Exception("Email already registered. Please choose a different email.");
             }
 
             if (empty($password)) {
                 $errorMessages[] = "Password is required.";
             } elseif (strlen($password) < 6) {
-                $errorMessages[] = "Password must be at least 6 characters long.";
+                throw new Exception("Password must be at least 6 characters long.");
             }
 
-            // Check if the user exists
             if (empty($errorMessages)) {
                 if ($this->userModel->createUser($name, $email, $password)) {
                     return true;
                 } else {
                     throw new Exception("An error occurred during registration. Please try again later.");
                 }
-            } else {
-                throw new Exception(implode("<br>", $errorMessages));
             }
         }
     }
 
     public function loginUser()
     {
-        $email = isset($_POST['email']) ? $_POST['email'] : '';
-        $password = isset($_POST['password']) ? $_POST['password'] : '';
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $email = isset($_POST['email']) ? $_POST['email'] : '';
+            $password = isset($_POST['password']) ? $_POST['password'] : '';
 
-        try {
             if (empty($email)) {
                 throw new Exception("Email is required!");
             }
 
+            if (empty($password)) {
+                throw new Exception("Password is required!");
+            }
+
             $userData = $this->userModel->readUser($email);
 
-            if ($userData) {
-                $hashedPassword = $userData[0]['password'];
-
-                if (password_verify($password, $hashedPassword)) {
-                    $_SESSION['user'] = $userData[0];
-                    return true;
-                } else {
-                    throw new Exception("Incorrect password");
-                }
+            if (!$userData) {
+                throw new Exception("User not found!");
             }
-        } catch (Exception $e) {
-            $this->errors[] = $e->getMessage();
-            // $this->formHandler->showForm('login');
+
+            $hashedPassword = $userData[0]['password'];
+            if (password_verify($password, $hashedPassword)) {
+                $_SESSION['user'] = $userData[0];
+                return true;
+            } else {
+                throw new Exception("Incorrect password");
+            }
         }
     }
+
 
 
     public function unsetUser()

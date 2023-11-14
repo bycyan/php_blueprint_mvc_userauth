@@ -69,6 +69,7 @@ class MainController
     //////////////////////////////////////////////////////////
     //HANDLERS
     //////////////////////////////////////////////////////////
+    public $errorMessage = "";
 
     private function handlePostRequest()
     {
@@ -78,13 +79,19 @@ class MainController
 
         switch ($this->response['page']) {
             case 'login':
-                $this->userController->loginUser($email, $password);
-                //todo: if succes > $this->response['page'] = 'home';
+                try {
+                    //todo: if login succes > $this->response['page'] = 'home';
+                    $this->userController->loginUser($email, $password);
+                } catch (Exception $errors) {
+                    $this->errorMessage = $errors->getMessage();
+                }
+
+
                 break;
 
             case 'register':
                 try {
-                    $registrationResult = $this->userController->register($name, $email, $password);
+                    $registrationResult = $this->userController->registerUser($name, $email, $password);
                     if ($registrationResult === true) {
                         $this->response['page'] = 'login';
                         $loginResult = $this->userController->loginUser($email, $password);
@@ -95,10 +102,9 @@ class MainController
                             $this->response['errorMessages'] = $errorMessages;
                         }
                     }
-                } catch (Exception $e) {
-                    $errorMessages[] = $e->getMessage();
+                } catch (Exception $errors) {
+                    $this->errorMessage = $errors->getMessage();
                 }
-                // $this->response['errorMessages'] = $errorMessages;
                 break;
         }
     }
@@ -115,15 +121,6 @@ class MainController
     private function handlePageViews()
     {
         $page = 'home';
-
-        //ERROR MESSAGES FROM USER CONTROLLER
-        if (isset($this->response['errorMessages'])) {
-            foreach ($this->response['errorMessages'] as $errorMessage) {
-                error_log("Error: " . $errorMessage);
-                echo "<p>Error: $errorMessage</p>";
-            }
-        }
-
         switch ($this->response['page']) {
             default:
                 require_once "views/HomeView.php";
@@ -131,12 +128,14 @@ class MainController
                 break;
             case 'register':
                 $page = $this->handleFormViewInst($this->response['page']);
+                echo $this->errorMessage;
                 break;
             case 'contact':
                 $page = $this->handleFormViewInst($this->response['page']);
                 break;
             case 'login':
                 $page = $this->handleFormViewInst($this->response['page']);
+                echo $this->errorMessage;
                 break;
         }
         if ($page) {
