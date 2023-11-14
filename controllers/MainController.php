@@ -1,65 +1,64 @@
 <?php
-require_once "models/UserModel.php";
 require_once "controllers/UserController.php";
-
 class MainController
 {
     protected $db;
     protected $response;
     protected $request;
-    public $userModel;
-    public $userController;
+    protected $userController;
 
     public function __construct(Database $db)
     {
-        $this->db = $db;
-        $this->userModel = new UserModel($db);
-        $this->userController = new UserController($this->userModel);
+        $this->userController = new UserController(new UserModel($db));
     }
 
     //////////////////////////////////////////////////////////
-    //MAIN FLOW
+    //START MAIN FLOW
     //////////////////////////////////////////////////////////
 
     public function handleMainFlow()
     {
-        $this->request = $this->getRequest();
-        $this->response = $this->validateRequest($this->request);
+        $this->getRequest();
+        $this->validateRequest();
         $this->showResponse();
     }
 
-    private function getRequest(): array
+    //////////////////////////////////////////////////////////
+    //GET, VALIDATE, SHOW
+    //////////////////////////////////////////////////////////
+
+    private function getRequest()
     {
         $requestMethod = ($_SERVER['REQUEST_METHOD'] === 'POST');
         $page = $this->getRequestVar('page', $requestMethod, 'home');
 
-        return [
-            'post' => $requestMethod,
-            'page' => $page,
-        ];
+        $this->request =
+            [
+                'post' => $requestMethod,
+                'page' => $page,
+            ];
     }
 
-    private function validateRequest(array $request): array
+    private function validateRequest()
     {
-        $result = $request;
-        if ($request['post']) {
-            $this->handlePostRequest($result);
+        $this->response = $this->request;
+        if ($this->request['post']) {
+            $this->handlePostRequest();
         } else {
-            $this->handleGetRequest($result);
+            $this->handleGetRequest();
         }
-        return $result;
     }
 
     private function showResponse()
     {
-        $response = $this->response;
-        $this->handlePageViews($response);
+        $this->handlePageViews();
     }
 
-
+    //////////////////////////////////////////////////////////
+    //END MAIN FLOW
     //////////////////////////////////////////////////////////
 
-    public function getRequestVar(string $key, bool $frompost, $default = "", bool $asnumber = FALSE)
+    private function getRequestVar(string $key, bool $frompost, $default = "", bool $asnumber = FALSE)
     {
         $filter = $asnumber ? FILTER_SANITIZE_NUMBER_FLOAT : FILTER_SANITIZE_FULL_SPECIAL_CHARS;
         $result = filter_input(($frompost ? INPUT_POST : INPUT_GET), $key, $filter);
@@ -67,56 +66,81 @@ class MainController
     }
 
     //////////////////////////////////////////////////////////
-    //HANDLERS
+    //PAGE VIEW HANDLERS
     //////////////////////////////////////////////////////////
 
-    private function handlePostRequest($request)
+    private function handlePostRequest()
     {
         $name = $this->getRequestVar('name', true, '');
         $email = $this->getRequestVar('email', true, '');
         $password = $this->getRequestVar('password', true, '');
 
-        switch ($request['page']) {
+        switch ($this->response['page']) {
             case 'login':
-                $this->userController->loginUser($email);
+                try {
+                    $data = $this->userController->loginUser($email, $password);
+                    if ($data === true) {
+                        $this->response['page'] = 'home';
+                    }
+                } catch (Exception $errors) {
+                    $this->response['errors'] = $errors->getMessage();
+                }
                 break;
+
             case 'register':
-                $this->userController->registerUser($name, $email, $password);
+                try {
+                    $data = $this->userController->registerUser($name, $email, $password);
+                    if ($data === true) {
+                        $loginAfterRegister = $this->userController->loginUser($email, $password);
+                        if ($loginAfterRegister === true) {
+                            $this->response['page'] = 'home';
+                        } else {
+                            throw new Exception("Login failed after registration. Please try logging in manually.");
+                        }
+                    }
+                } catch (Exception $errors) {
+                    $this->response['errors'] = $errors->getMessage();
+                }
                 break;
         }
     }
 
-    private function handleGetRequest($request)
+    private function handleGetRequest()
     {
-        switch ($request['page']) {
+        switch ($this->response['page']) {
             case 'logout':
                 $this->response = $this->userController->unsetUser();
                 break;
         }
     }
 
-    private function handlePageViews($response)
+    private function handlePageViews()
     {
+        $errors = isset($this->response['errors']) ? $this->response['errors'] : [];
+
         $page = 'home';
-        switch ($response['page']) {
+        switch ($this->response['page']) {
             default:
                 require_once "views/HomeView.php";
-                $page = new HomeView($response);
+                $page = new HomeView($this->response);
                 break;
             case 'login':
-                require_once "views/LoginView.php";
-                $page = new LoginView($response);
-                break;
             case 'register':
-                require_once "views/RegisterView.php";
-                $page = new RegisterView($response);
+            case 'contact':
+                $page = $this->handleFormViewInst($this->response['page'], $errors);
                 break;
         }
-
         if ($page) {
             $page->renderHTML();
         } else {
             echo 'Page not found';
         }
+    }
+
+    private function handleFormViewInst($page, $errors)
+    {
+        require_once "views/FormView.php";
+        $errorsArray = is_array($errors) ? $errors : [$errors];
+        return new FormView($page, $errorsArray);
     }
 }
