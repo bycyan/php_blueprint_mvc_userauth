@@ -29,7 +29,7 @@ class FormHelper
 
     private function showFields(array $postResult = [])
     {
-        $errorMessages = [];
+
 
         foreach ($this->fields as $fieldName => $fieldInfo) {
             $currentValue = (isset($postResult[$fieldName]) ? $postResult[$fieldName] : '');
@@ -42,6 +42,12 @@ class FormHelper
             foreach ($this->errors as $error) {
                 echo $error . '<br>';
             }
+            //     if (isset($this->errors[$fieldName]) && is_array($this->errors[$fieldName])) {
+            //         foreach ($this->errors[$fieldName] as $error) {
+            //             echo $error . '<br>';
+            //         }
+            //     }
+            // }
         }
     }
 

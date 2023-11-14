@@ -30,7 +30,7 @@ class UserController
             if (empty($email)) {
                 throw new Exception("Email is required.");
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                throw new Exception("Invalid email format."); // meegeven bij welk veld dit hoort
+                throw new Exception("Invalid email format.");
             }
 
             $doesUserExist = $this->userModel->readUser($email);
