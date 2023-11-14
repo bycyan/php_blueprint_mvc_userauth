@@ -5,6 +5,7 @@ class UserController
 {
 
     protected $userModel;
+    private $fieldErrors = [];
 
     public function __construct(UserModel $userModel)
     {
@@ -60,11 +61,13 @@ class UserController
             $password = isset($_POST['password']) ? $_POST['password'] : '';
 
             if (empty($email)) {
-                throw new Exception("Email is required!");
+                // throw new Exception("Email is required!");
+                $this->fieldErrors['email'] = "Email is required.";
             }
 
             if (empty($password)) {
-                throw new Exception("Password is required!");
+                // throw new Exception("Password is required!");
+                $this->fieldErrors['password'] = "Password is required.";
             }
 
             $user = $this->userModel->readUser($email);
@@ -81,6 +84,11 @@ class UserController
                 throw new Exception("Incorrect password");
             }
         }
+    }
+
+    public function getFieldErrors()
+    {
+        return $this->fieldErrors;
     }
 
     public function unsetUser()

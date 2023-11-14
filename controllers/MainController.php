@@ -83,7 +83,11 @@ class MainController
                         $this->response['page'] = 'home';
                     }
                 } catch (Exception $errors) {
-                    $this->response['errors'] = $errors->getMessage();
+                    $this->response['errors'] = $this->userController->getFieldErrors();
+                    $this->response['postResult'] = [
+                        'email' => $email,
+                        'password' => $password,
+                    ];
                 }
                 break;
 

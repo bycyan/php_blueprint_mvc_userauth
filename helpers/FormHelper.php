@@ -13,7 +13,7 @@ class FormHelper
 
     public function showForm(string $page = '')
     {
-        $postResult = [];
+        $postResult = isset($this->errors['postResult']) ? $this->errors['postResult'] : [];
         $this->openForm($page, '');
         $this->showFields($postResult);
         $this->closeForm();
@@ -29,27 +29,26 @@ class FormHelper
 
     private function showFields(array $postResult = [])
     {
-
-
         foreach ($this->fields as $fieldName => $fieldInfo) {
-            $currentValue = (isset($postResult[$fieldName]) ? $postResult[$fieldName] : '');
+            $currentValue = isset($postResult[$fieldName]) ? $postResult[$fieldName] : '';
 
             if ($fieldInfo['type'] === 'textarea') {
                 echo '<textarea name="' . $fieldName . '" placeholder="' . $fieldInfo['placeholder'] . '">' . $currentValue . '</textarea>' . PHP_EOL;
             } else {
                 echo '<input name="' . $fieldName . '" type="' . $fieldInfo['type'] . '" placeholder="' . $fieldInfo['placeholder'] . '" value="' . $currentValue . '">' . PHP_EOL;
             }
-            foreach ($this->errors as $error) {
-                echo $error . '<br>';
+
+            if (isset($this->errors[$fieldName])) {
+                // Convert the error to an array if it's a string
+                $errorsForField = is_array($this->errors[$fieldName]) ? $this->errors[$fieldName] : [$this->errors[$fieldName]];
+
+                foreach ($errorsForField as $error) {
+                    echo $error . '<br>';
+                }
             }
-            //     if (isset($this->errors[$fieldName]) && is_array($this->errors[$fieldName])) {
-            //         foreach ($this->errors[$fieldName] as $error) {
-            //             echo $error . '<br>';
-            //         }
-            //     }
-            // }
         }
     }
+
 
     private function closeForm(string $submitCaption = "Submit")
     {
