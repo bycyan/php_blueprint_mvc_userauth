@@ -81,6 +81,8 @@ class MainController
                     $data = $this->userController->loginUser($email, $password);
                     if ($data === true) {
                         $this->response['page'] = 'home';
+
+                        //After login, get userrole by user_id
                     }
                 } catch (Exception $errors) {
                     $this->response['errors'] = $this->userController->getFieldErrors();
