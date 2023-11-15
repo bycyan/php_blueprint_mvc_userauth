@@ -61,13 +61,17 @@ class UserController
             $password = isset($_POST['password']) ? $_POST['password'] : '';
 
             if (empty($email)) {
-                // throw new Exception("Email is required!");
+                throw new Exception("Email is required!");
                 $this->fieldErrors['email'] = "Email is required.";
             }
 
             if (empty($password)) {
-                // throw new Exception("Password is required!");
+                throw new Exception("Password is required!");
                 $this->fieldErrors['password'] = "Password is required.";
+            }
+
+            if (!empty($this->fieldErrors)) {
+                return false;
             }
 
             $user = $this->userModel->readUser($email);

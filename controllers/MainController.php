@@ -84,10 +84,7 @@ class MainController
                     }
                 } catch (Exception $errors) {
                     $this->response['errors'] = $this->userController->getFieldErrors();
-                    $this->response['postResult'] = [
-                        'email' => $email,
-                        'password' => $password,
-                    ];
+                    echo $this->response['errors'];
                 }
                 break;
 
