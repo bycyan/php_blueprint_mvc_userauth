@@ -4,6 +4,13 @@ class HomeView extends BodyView
 {
     function showMainContent()
     {
-        echo '<h1>Home Page</h1>';
+        if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
+            $name = htmlspecialchars($_SESSION['user']['name']);
+            $nameParts = explode(' ', $name);
+            $firstName = $nameParts[0];
+            $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+
+            echo '<h1>Hey ' . $name . ' !</h1>';
+        }
     }
 }

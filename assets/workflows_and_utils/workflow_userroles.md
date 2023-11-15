@@ -1,6 +1,13 @@
+# workflow_userroles
+
 1. koppeltabel aanmaken "user_roles"
 2. tabel aanmaken "roles"
-3. na user authenticatie (login) rol ophalen: getUserRol($id)
+3. na user authenticatie (login) rol ophalen: getUserRol($user_id)
+
+```php
+// After successful login. De functie getUserRole aanmaken in controller
+$_SESSION['user_role'] = getUserRole($user_id);
+```
 
 4. Controller en View implementatie
 
@@ -29,7 +36,7 @@ public function editAction() {
 <?php endif; ?>
 ```
 
-5. Pas proberen als het bovenste lukt
+5. **op request niveau** (Pas implementeren als het bovenste lukt!!)
 
 **Middleware** checks user roles before processing the request.
 
@@ -51,3 +58,24 @@ Apply middleware to routes that require admin access.
 // Example route definition with middleware
 $router->add('/admin/edit', ['AdminController', 'editAction'], ['AdminMiddleware']);
 ```
+
+6. **permissions**
+
+### add permissions to "roles" table
+
+```sql
+INSERT INTO permissions (name) VALUES
+    ('view_content'),
+    ('add_content'),
+    ('edit_content'),
+    ('delete_content');
+```
+
+- logged-in user can: view_content, edit own information, delete account
+- a admin can: all of users permission +
+
+niet ingelogd == 0
+user == level 1
+admin == level 100
+
+per pagina kijken welk niveau er binnenkomt. als de waarde groter is dan 0 is het niet meer nodig om login en register te tonen.
