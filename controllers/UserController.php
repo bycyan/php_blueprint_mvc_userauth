@@ -28,16 +28,16 @@ class UserController
             $email = isset($_POST['email']) ? $_POST['email'] : '';
             $password = isset($_POST['password']) ? $_POST['password'] : '';
 
+            //Validate Form Fields
             if (empty($email)) {
                 $this->fieldErrors['email'] = "Email is required.";
-                // throw new Exception();
             }
-
             if (empty($password)) {
                 $this->fieldErrors['password'] = "Password is required.";
-                // throw new Exception();
             }
 
+            //Als fieldErrors leeg zijn, lees de users
+            //todo: fieldErrors empty scheiden van gegevens validatie errors
             if (empty($this->fieldErrors)) {
                 $user = $this->userModel->readUser($email);
 
@@ -69,31 +69,37 @@ class UserController
             $password = isset($_POST['password']) ? $_POST['password'] : '';
 
             if (empty($name)) {
-                throw new Exception("Username is required.");
+                $this->fieldErrors['name'] = "Username is required.";
             }
 
             if (empty($email)) {
-                throw new Exception("Email is required.");
+                $this->fieldErrors['email'] = "Email is required.";
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                throw new Exception("Invalid email format.");
-            }
-
-            $doesUserExist = $this->userModel->readUser($email);
-
-            if ($doesUserExist) {
-                throw new Exception("Email already registered. Please choose a different email.");
+                $this->fieldErrors['email'] = "Invalid email format.";
             }
 
             if (empty($password)) {
-                throw new Exception("Password is required.");
+                $this->fieldErrors['password'] = "Password is required.";
             } elseif (strlen($password) < 6) {
-                throw new Exception("Password must be at least 6 characters long.");
+                $this->fieldErrors['password'] = "Password must be at least 6 characters long.";
             }
 
-            if ($this->userModel->createUser($name, $email, $password)) {
-                return true;
-            } else {
-                throw new Exception("An error occurred during registration. Please try again later.");
+            if (empty($this->fieldErrors)) {
+                $doesUserExist = $this->userModel->readUser($email);
+
+                if ($doesUserExist) {
+                    $this->fieldErrors['email'] = "Email already registered. Please choose a different email.";
+                }
+
+                if ($this->userModel->createUser($name, $email, $password)) {
+                    return true;
+                } else {
+                    //todo: deze error als algemene error tonen
+                    $this->fieldErrors['email'] = "An error occurred during registration. Please try again later.";
+                }
+            }
+            if (!empty($this->fieldErrors)) {
+                throw new Exception();
             }
         }
     }

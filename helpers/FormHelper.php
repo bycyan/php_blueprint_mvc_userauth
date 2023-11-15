@@ -43,17 +43,17 @@ class FormHelper
                 // Convert the error to an array if it's a string
                 $errorsForField = is_array($this->errors[$fieldName]) ? $this->errors[$fieldName] : [$this->errors[$fieldName]];
 
-                echo "Debugging - Errors for field $fieldName before loop: ";
-                var_dump($errorsForField);
+                // echo "Debugging - Errors for field $fieldName before loop: ";
+                // var_dump($errorsForField);
 
                 foreach ($errorsForField as $error) {
-                    echo $error . '<br>';
+                    echo '<p class="error-message">' . $error . '<br><p>';
                 }
 
-                echo "Debugging - Errors for field $fieldName after loop: ";
-                var_dump($errorsForField);
+                // echo "Debugging - Errors for field $fieldName after loop: ";
+                // var_dump($errorsForField);
             } else {
-                echo "Debugging - No errors for field: $fieldName";
+                // echo "Debugging - No errors for field: $fieldName";
             }
         }
     }

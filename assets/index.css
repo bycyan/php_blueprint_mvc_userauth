@@ -165,3 +165,7 @@ form button:hover{
     cursor: pointer;
 }
 
+.error-message{
+    color: #bc3b36;
+}
+

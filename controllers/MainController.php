@@ -84,7 +84,6 @@ class MainController
                     }
                 } catch (Exception $errors) {
                     $this->response['errors'] = $this->userController->getFieldErrors();
-                    var_dump($this->response['errors']);
                 }
                 break;
 
@@ -96,11 +95,12 @@ class MainController
                         if ($loginAfterRegister === true) {
                             $this->response['page'] = 'home';
                         } else {
+                            //todo: deze error showen
                             throw new Exception("Login failed after registration. Please try logging in manually.");
                         }
                     }
                 } catch (Exception $errors) {
-                    $this->response['errors'] = $errors->getMessage();
+                    $this->response['errors'] = $this->userController->getFieldErrors();
                 }
                 break;
         }

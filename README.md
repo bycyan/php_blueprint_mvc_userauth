@@ -4,5 +4,9 @@
 
 - User authentication
 - Dynamic form builder
-- Dynamic error handling
+- Form field-specific error-handling
 - Database configuration
+
+## New features
+
+- User roles Admin, User
