@@ -5,7 +5,7 @@ class UserController
 {
 
     protected $userModel;
-    private $fieldErrors = [];
+    public $fieldErrors = [];
 
     public function __construct(UserModel $userModel)
     {
@@ -16,6 +16,50 @@ class UserController
     {
         return $this->userModel;
     }
+
+    public function getFieldErrors()
+    {
+        return $this->fieldErrors;
+    }
+
+    public function loginUser()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $email = isset($_POST['email']) ? $_POST['email'] : '';
+            $password = isset($_POST['password']) ? $_POST['password'] : '';
+
+            if (empty($email)) {
+                $this->fieldErrors['email'] = "Email is required.";
+                // throw new Exception();
+            }
+
+            if (empty($password)) {
+                $this->fieldErrors['password'] = "Password is required.";
+                // throw new Exception();
+            }
+
+            if (empty($this->fieldErrors)) {
+                $user = $this->userModel->readUser($email);
+
+                if (!$user) {
+                    $this->fieldErrors['email'] = "User not found";
+                } else {
+                    $hashedPassword = $user[0]['password'];
+                    if (password_verify($password, $hashedPassword)) {
+                        $_SESSION['user'] = $user[0];
+                        return true;
+                    } else {
+                        $this->fieldErrors['password'] = "Incorrect password";
+                    }
+                }
+            }
+            if (!empty($this->fieldErrors)) {
+                throw new Exception();
+            }
+        }
+        return false;
+    }
+
 
     public function registerUser($name, $email, $password)
     {
@@ -54,51 +98,10 @@ class UserController
         }
     }
 
-    public function loginUser()
-    {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $email = isset($_POST['email']) ? $_POST['email'] : '';
-            $password = isset($_POST['password']) ? $_POST['password'] : '';
-
-            if (empty($email)) {
-                throw new Exception("Email is required!");
-                $this->fieldErrors['email'] = "Email is required.";
-            }
-
-            if (empty($password)) {
-                throw new Exception("Password is required!");
-                $this->fieldErrors['password'] = "Password is required.";
-            }
-
-            if (!empty($this->fieldErrors)) {
-                return false;
-            }
-
-            $user = $this->userModel->readUser($email);
-
-            if (!$user) {
-                throw new Exception("User not found!");
-            }
-
-            $hashedPassword = $user[0]['password'];
-            if (password_verify($password, $hashedPassword)) {
-                $_SESSION['user'] = $user[0];
-                return true;
-            } else {
-                throw new Exception("Incorrect password");
-            }
-        }
-    }
-
-    public function getFieldErrors()
-    {
-        return $this->fieldErrors;
-    }
-
     public function unsetUser()
     {
         unset($_SESSION['user']);
-        $result['page'] = 'home';
+        $result['page'] = 'login';
         return $result;
     }
 }

@@ -38,14 +38,22 @@ class FormHelper
                 echo '<input name="' . $fieldName . '" type="' . $fieldInfo['type'] . '" placeholder="' . $fieldInfo['placeholder'] . '" value="' . $currentValue . '">' . PHP_EOL;
             }
 
-
-
+            // Check if there are errors for the current field
             if (isset($this->errors[$fieldName])) {
+                // Convert the error to an array if it's a string
                 $errorsForField = is_array($this->errors[$fieldName]) ? $this->errors[$fieldName] : [$this->errors[$fieldName]];
-                echo $errorsForField;
-                foreach ($errorsForField as $localError) {
-                    echo $localError . '<br>';
+
+                echo "Debugging - Errors for field $fieldName before loop: ";
+                var_dump($errorsForField);
+
+                foreach ($errorsForField as $error) {
+                    echo $error . '<br>';
                 }
+
+                echo "Debugging - Errors for field $fieldName after loop: ";
+                var_dump($errorsForField);
+            } else {
+                echo "Debugging - No errors for field: $fieldName";
             }
         }
     }

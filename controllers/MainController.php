@@ -84,7 +84,7 @@ class MainController
                     }
                 } catch (Exception $errors) {
                     $this->response['errors'] = $this->userController->getFieldErrors();
-                    echo $this->response['errors'];
+                    var_dump($this->response['errors']);
                 }
                 break;
 
