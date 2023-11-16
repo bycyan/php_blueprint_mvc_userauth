@@ -37,6 +37,8 @@ class DashboardView extends BodyView
                         echo 'No users found.';
                     }
                 }
+            } else {
+                echo '<h3> Hey '  . $name . ' !</h3>';
             }
         }
     }

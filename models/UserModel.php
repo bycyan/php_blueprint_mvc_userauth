@@ -52,7 +52,8 @@ class UserModel extends Database
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         try {
-            $sqlQuery = "UPDATE users SET name = :name, email = :email, password = :password WHERE id = :id";
+            //UPDATE `users` SET `email` = 'John@email.com' WHERE `users`.`id` = 71;
+            $sqlQuery = "UPDATE users SET name = :name, email = :email, password = :password WHERE `users`.`id` = :id";
             $data = [
                 ':id' => $userId,
                 ':name' => $name,

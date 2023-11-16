@@ -89,6 +89,7 @@ class MainController
                     $data = $this->userController->loginUser($email, $password);
                     if ($data === true) {
                         $this->response['page'] = 'dashboard';
+                        //todo: na login kkomt ie in logout url?
                     }
                 } catch (Exception $errors) {
                     $this->response['errors'] = $this->userController->getFieldErrors();
