@@ -16,7 +16,7 @@ class DashboardView extends BodyView
                     $userList = $this->response['users'];
 
                     if (!empty($userList)) {
-                        echo '<h3>'  . $firstName . '\'s Team Dashboard </h3>';
+                        echo '<h3>'  . $firstName . '\'s Team Members </h3>';
 
                         echo '<table class="order center">
                         <tr class="order-item"><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th></th></tr>';

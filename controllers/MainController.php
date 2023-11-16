@@ -154,24 +154,32 @@ class MainController
     {
         $errors = isset($this->response['errors']) ? $this->response['errors'] : [];
 
-        // if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'user') {
-        //     echo '<button> You are a user!</button>';
-        // }
-
-        // if ($_SESSION['user']['role'] === 'admin')
-        //     var_dump($_SESSION);
-
         $page = 'home';
         switch ($this->response['page']) {
             default:
                 require_once "views/DashboardView.php";
                 $page = new DashboardView($this->response);
                 break;
+            case 'profile':
+                require_once "views/ProfileView.php";
+                // Extract the email parameter from the URL
+                $emailParam = $_GET['email'] ?? null;
+
+                // URL-decode the email parameter if it exists
+                if ($emailParam !== null) {
+                    $userEmail = urldecode($emailParam);
+                } else {
+                    // Handle default behavior if the email parameter is not present or invalid
+                    $userEmail = ''; // Set a default value or handle the absence of the parameter
+                }
+
+                // Instantiate the ProfileView with the extracted email parameter
+                $page = new ProfileView($this->response, $userEmail);
+                break;
             case 'login':
             case 'register':
                 //todo: contact errors
             case 'contact':
-            case 'profile':
                 $page = $this->handleFormViewInst($this->response['page'], $errors);
                 break;
         }
