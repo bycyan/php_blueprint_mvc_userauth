@@ -71,9 +71,17 @@ class MainController
 
     private function handlePostRequest()
     {
+        $userId = $this->getRequestVar('id', true, '');
         $name = $this->getRequestVar('name', true, '');
         $email = $this->getRequestVar('email', true, '');
         $password = $this->getRequestVar('password', true, '');
+
+        //filter op rol??
+        function adminFilter()
+        {
+            if ($_SESSION['user']['role'] === 'admin')
+                var_dump($_SESSION);
+        }
 
         switch ($this->response['page']) {
             case 'login':
@@ -94,10 +102,22 @@ class MainController
                         $loginAfterRegister = $this->userController->loginUser($email, $password);
                         if ($loginAfterRegister === true) {
                             $this->response['page'] = 'home';
+
+                            //todo:er zit nog een bug na het registreren, hij kan dan namelijk nog een keer registreren
                         } else {
                             //todo: deze error showen
                             throw new Exception("Login failed after registration. Please try logging in manually.");
                         }
+                    }
+                } catch (Exception $errors) {
+                    $this->response['errors'] = $this->userController->getFieldErrors();
+                }
+                break;
+            case 'profile':
+                try {
+                    $data = $this->userController->updateProfile($_POST);
+                    if ($data === true) {
+                        echo "User updated successfully!";
                     }
                 } catch (Exception $errors) {
                     $this->response['errors'] = $this->userController->getFieldErrors();
@@ -119,6 +139,19 @@ class MainController
     {
         $errors = isset($this->response['errors']) ? $this->response['errors'] : [];
 
+        echo ($_SESSION['user']['name']);
+        echo '<br><br>';
+        var_dump($_POST);
+
+        // if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'user') {
+        //     echo '<button> You are a user!</button>';
+        // }
+        //filter op rol view laag??
+
+        // if ($_SESSION['user']['role'] === 'admin')
+        //     var_dump($_SESSION);
+
+
         $page = 'home';
         switch ($this->response['page']) {
             default:
@@ -127,7 +160,9 @@ class MainController
                 break;
             case 'login':
             case 'register':
+                //todo: contact errors
             case 'contact':
+            case 'profile':
                 $page = $this->handleFormViewInst($this->response['page'], $errors);
                 break;
         }

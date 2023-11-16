@@ -24,7 +24,7 @@ abstract class BodyView extends Base
         <nav>
             <div class="menu-items">
                 <ul>
-                    <li><a href="index.php?page=home">Home</a></li>
+                    <li><a href="index.php?page=home">Dashboard</a></li>
                     <li><a href="index.php?page=contact">Contact</a></li>';
 
         if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
@@ -32,7 +32,7 @@ abstract class BodyView extends Base
             $nameParts = explode(' ', $name);
             $firstName = $nameParts[0];
             $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
-
+            echo '<li><a href="index.php?page=profile">Profile</a></li>';
             echo '<li><a href="index.php?page=logout">logout: ' . $firstName . '</a></li>';
         } else {
             echo '

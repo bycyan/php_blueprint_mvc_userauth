@@ -6,6 +6,8 @@ class UserController
 
     protected $userModel;
     public $fieldErrors = [];
+    private $userData;
+
 
     public function __construct(UserModel $userModel)
     {
@@ -20,6 +22,11 @@ class UserController
     public function getFieldErrors()
     {
         return $this->fieldErrors;
+    }
+
+    public function getUserData()
+    {
+        return $this->userData;
     }
 
     public function loginUser()
@@ -102,7 +109,50 @@ class UserController
                 throw new Exception();
             }
         }
+        return false;
     }
+
+    public function updateProfile($userData)
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $userId = isset($userData['id']) ? $userData['id'] : '';
+            $name = isset($userData['name']) ? $userData['name'] : '';
+            $email = isset($userData['email']) ? $userData['email'] : '';
+            $password = isset($userData['password']) ? $userData['password'] : '';
+
+            // if (!empty($password) && strlen($password) < 6) {
+            //     $this->fieldErrors['password'] = "Password must be at least 6 characters long.";
+            // }
+
+            if (empty($this->fieldErrors)) {
+                try {
+
+                    $this->userModel->updateUser($userId, $name, $email, $password);
+                    // // Check if the provided email exists in the database
+                    // $existingUser = $this->userModel->readUser($email);
+
+                    // // If user exists and it's not the current user being updated
+                    // if ($existingUser && $existingUser[0]['id'] !== $userId) {
+                    //     $this->fieldErrors['email'] = "Email already registered. Please choose a different email.";
+                    // } else {
+                    //     // Update user details
+                    //     $result = $this->userModel->updateUser($userId, $name, $email, $password);
+                    //     if ($result) {
+                    //         return true;
+                    //     } else {
+                    //         // Handle update failure
+                    //         // todo: Handle failure scenario appropriately
+                    //     }
+                    // }
+                } catch (Exception) {
+                    // throw new Exception("Error: " . $e->getMessage());
+                    throw new Exception();
+                }
+            }
+        }
+        return false;
+    }
+
 
     public function unsetUser()
     {

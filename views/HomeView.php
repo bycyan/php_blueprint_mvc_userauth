@@ -10,7 +10,12 @@ class HomeView extends BodyView
             $firstName = $nameParts[0];
             $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
 
-            echo '<h1>Hey ' . $name . ' !</h1>';
+            echo '<h3>Hey ' . $name . ' </h3>';
+            echo '<p>Team Dashboard </p>';
+
+            if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') {
+                //todo list of all users in edit mode
+            }
         }
     }
 }

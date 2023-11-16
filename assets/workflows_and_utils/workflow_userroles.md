@@ -79,3 +79,16 @@ user == level 1
 admin == level 100
 
 per pagina kijken welk niveau er binnenkomt. als de waarde groter is dan 0 is het niet meer nodig om login en register te tonen.
+
+Tot nu toe:
+
+- User tabel toegevoegd aan database. als user wordt geregistreerd is het automatisch een user. ENUM user en admin
+- is de Session waar de userrole === aan user > laat iets zien
+
+Stappenplan
+
+- een admin ziet een dashboard/lijst(home) >> get all users in user controller met alle gebruikers >> filter op view (alleen de admin krijgt een lijst anders alleen de gebruikers tonen)
+- alleen de admin kan deze aanpassen en verwijderen (update and delete user toevoegen) >> filer op userController
+- knoppen roepen dus functie delete en update aan
+
+1.
