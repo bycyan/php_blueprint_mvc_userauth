@@ -23,15 +23,21 @@ abstract class BodyView extends Base
         echo '
         <nav>
             <div class="menu-items">
+                <div class="company-name">
+                    DECODED &trade;
+                </div>
+                
+                <div>
                 <ul>
-                    <li><a href="index.php?page=home">Dashboard</a></li>
-                    <li><a href="index.php?page=contact">Contact</a></li>';
+                    ';
 
         if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
             $name = htmlspecialchars($_SESSION['user']['name']);
             $nameParts = explode(' ', $name);
             $firstName = $nameParts[0];
             $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+
+            echo '<li><a href="index.php?page=dashboard">Dashboard</a></li>';
             echo '<li><a href="index.php?page=profile">Profile</a></li>';
             echo '<li><a href="index.php?page=logout">logout: ' . $firstName . '</a></li>';
         } else {
@@ -42,6 +48,7 @@ abstract class BodyView extends Base
 
         echo '
                 </ul>
+            </div>
             </div>
         </nav>';
     }
@@ -61,6 +68,7 @@ abstract class BodyView extends Base
 
     protected function showFooter()
     {
-        echo '<a href="https://github.com/bycyan/php_blueprint_mvc_userauth" target="blank">Go to GitHub repository</a>';;
+        // echo '<a href="https://github.com/bycyan/php_blueprint_mvc_userauth" target="blank">Go to GitHub repository</a>';
+        echo '<br>';
     }
 }

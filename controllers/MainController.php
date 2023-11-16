@@ -71,7 +71,7 @@ class MainController
 
     private function handlePostRequest()
     {
-        $userId = $this->getRequestVar('id', true, '');
+        // $userId = $this->getRequestVar('id', true, '');
         $name = $this->getRequestVar('name', true, '');
         $email = $this->getRequestVar('email', true, '');
         $password = $this->getRequestVar('password', true, '');
@@ -88,7 +88,7 @@ class MainController
                 try {
                     $data = $this->userController->loginUser($email, $password);
                     if ($data === true) {
-                        $this->response['page'] = 'home';
+                        $this->response['page'] = 'dashboard';
                     }
                 } catch (Exception $errors) {
                     $this->response['errors'] = $this->userController->getFieldErrors();
@@ -101,7 +101,7 @@ class MainController
                     if ($data === true) {
                         $loginAfterRegister = $this->userController->loginUser($email, $password);
                         if ($loginAfterRegister === true) {
-                            $this->response['page'] = 'home';
+                            // $this->response['page'] = 'home';
 
                             //todo:er zit nog een bug na het registreren, hij kan dan namelijk nog een keer registreren
                         } else {
@@ -132,7 +132,7 @@ class MainController
             case 'logout':
                 $this->response = $this->userController->unsetUser();
                 break;
-            case 'home':
+            case 'dashboard':
                 try {
                     $allUsers = $this->userController->getAllUsers();
                     $this->response['users'] = $allUsers;
@@ -140,6 +140,12 @@ class MainController
                     //todo: handling
                 }
                 break;
+                // case urlencode($user['email']):
+                //     try {
+                //     } catch (Exception $errors) {
+                //         //todo: handling
+                //     }
+                //     break;
         }
     }
 
@@ -147,24 +153,18 @@ class MainController
     {
         $errors = isset($this->response['errors']) ? $this->response['errors'] : [];
 
-        echo ($_SESSION['user']['name']);
-        echo '<br><br>';
-        var_dump($_POST);
-
         // if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'user') {
         //     echo '<button> You are a user!</button>';
         // }
-        //filter op rol view laag??
 
         // if ($_SESSION['user']['role'] === 'admin')
         //     var_dump($_SESSION);
 
-
         $page = 'home';
         switch ($this->response['page']) {
             default:
-                require_once "views/HomeView.php";
-                $page = new HomeView($this->response);
+                require_once "views/DashboardView.php";
+                $page = new DashboardView($this->response);
                 break;
             case 'login':
             case 'register':

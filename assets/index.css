@@ -90,8 +90,10 @@ nav{
     width: 800px;
     padding: 20px;
     background-color: #21262d;
-    /* margin: 0 auto; */
     border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 nav ul{
@@ -107,8 +109,19 @@ nav a{
     text-decoration: none;
 }
 
+nav img{
+    width: 40px;
+}
+
+.menu-items{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 li{
+    font-size: 14px;
     margin: 0;
     display: inline-block;
     text-align: center;
@@ -151,7 +164,7 @@ form textarea{
 
 }
 
-form button{
+button{
     border-radius: 5px;
     color: white;
     border: none;
@@ -160,7 +173,7 @@ form button{
     padding: 10px;
 }
 
-form button:hover{
+button:hover{
     background-color: #1f6feb;
     cursor: pointer;
 }
@@ -169,3 +182,39 @@ form button:hover{
     color: #bc3b36;
 }
 
+table{
+    margin-bottom: 50px;
+}
+
+tr:nth-child(odd) {
+    background-color: #21262d;
+  }
+
+.order {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .order-item th,
+  .order-item td {
+    /* border: 1px solid #ddd; */
+    padding: 10px;
+    text-align: left;
+    height: 40px;
+    vertical-align: middle;
+  }
+  
+  .order-item th {
+    /* background: #f2f2f2; */
+    /* color: #0d1117; */
+    font-weight: 700;
+    border-bottom: 1px solid white;
+  }
+
+  .company-name {
+    color:#1f6feb;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+  }
