@@ -153,6 +153,17 @@ class UserController
         return false;
     }
 
+    public function getAllUsers()
+    {
+        try {
+            $users = $this->userModel->readAllUsers();
+            return $users;
+        } catch (Exception $errors) {
+            // Handle error scenario
+            return [];
+        }
+        return false;
+    }
 
     public function unsetUser()
     {

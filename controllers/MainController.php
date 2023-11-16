@@ -132,6 +132,14 @@ class MainController
             case 'logout':
                 $this->response = $this->userController->unsetUser();
                 break;
+            case 'home':
+                try {
+                    $allUsers = $this->userController->getAllUsers();
+                    $this->response['users'] = $allUsers;
+                } catch (Exception $errors) {
+                    //todo: handling
+                }
+                break;
         }
     }
 

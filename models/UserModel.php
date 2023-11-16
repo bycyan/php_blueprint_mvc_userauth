@@ -34,6 +34,18 @@ class UserModel extends Database
         }
     }
 
+    public function readAllUsers()
+    {
+        try {
+            $sqlQuery = "SELECT * FROM users";
+            $data = [];
+            $stmt = $this->readData($sqlQuery, $data);
+            return $stmt;
+        } catch (PDOException $e) {
+            throw new Exception("Error: " . $e->getMessage());
+        }
+    }
+
     //UPDATE
     public function updateUser($userId, $name, $email, $password)
     {
