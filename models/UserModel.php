@@ -34,7 +34,49 @@ class UserModel extends Database
         }
     }
 
-    //todo: UPDATE
-    //todo: DELETE
+    public function readAllUsers()
+    {
+        try {
+            $sqlQuery = "SELECT * FROM users";
+            $data = [];
+            $stmt = $this->readData($sqlQuery, $data);
+            return $stmt;
+        } catch (PDOException $e) {
+            throw new Exception("Error: " . $e->getMessage());
+        }
+    }
 
+    //UPDATE
+    public function updateUser($userId, $name, $email, $password)
+    {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        try {
+            $sqlQuery = "UPDATE users SET name = :name, email = :email, password = :password WHERE `users`.`id` = :id";
+            $data = [
+                ':id' => $userId,
+                ':name' => $name,
+                ':email' => $email,
+                ':password' => $hashedPassword
+            ];
+            $stmt = $this->updateData($sqlQuery, $data);
+            return $stmt;
+        } catch (PDOException $e) {
+            throw new Exception("Error: " . $e->getMessage());
+        }
+    }
+
+    // //DELETE
+    // public function deleteUser($userId)
+    // {
+    //     try {
+    //         $sqlQuery = "DELETE FROM users WHERE id = :id";
+    //         $data = [':id' => $userId];
+    //         $stmt = $this->deleteData($sqlQuery, $data);
+    //         // return $stmt->rowCount() > 0;
+    //         return $stmt;
+    //     } catch (PDOException $e) {
+    //         throw new Exception("Error: " . $e->getMessage());
+    //     }
+    // }
 }
