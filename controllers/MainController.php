@@ -88,11 +88,11 @@ class MainController
                 try {
                     $data = $this->userController->loginUser($email, $password);
                     if ($data === true) {
-                        $this->response['page'] = 'dashboard';
+                        $this->response['page'] = 'profile';
                         //todo: na login kkomt ie in logout url?
                     }
                 } catch (Exception $errors) {
-                    $this->response['errors'] = $this->userController->getFieldErrors();
+                    $this->response['errors'] = $this->userController->getFieldErrors(); //is dit niet dubbelop?
                 }
                 break;
 
@@ -102,8 +102,7 @@ class MainController
                     if ($data === true) {
                         $loginAfterRegister = $this->userController->loginUser($email, $password);
                         if ($loginAfterRegister === true) {
-                            // $this->response['page'] = 'home';
-
+                            $this->response['page'] = 'profile';
                             //todo:er zit nog een bug na het registreren, hij kan dan namelijk nog een keer registreren
                         } else {
                             //todo: deze error showen
@@ -114,9 +113,11 @@ class MainController
                     $this->response['errors'] = $this->userController->getFieldErrors();
                 }
                 break;
-            case 'profile':
+            case 'edit_profile':
                 try {
+
                     $data = $this->userController->updateProfile($_POST);
+                    echo $data;
                     if ($data === true) {
                         echo "User updated successfully!";
                     }
@@ -141,18 +142,19 @@ class MainController
                     //todo: handling
                 }
                 break;
-                // case urlencode($user['email']):
-                //     try {
-                //     } catch (Exception $errors) {
-                //         //todo: handling
-                //     }
-                //     break;
+            case 'profile':
+                $data = $this->response = $this->userController->getUserById();
+                if ($data === true) {
+                    $this->response['userInfo'] = $this->userController->getUserById();
+                }
+                break;
         }
     }
 
     private function handlePageViews()
     {
         $errors = isset($this->response['errors']) ? $this->response['errors'] : [];
+        $userInfo = isset($this->response['userInfo']) ? $this->response['userInfo'] : [];
 
         $page = 'home';
         switch ($this->response['page']) {
@@ -162,24 +164,14 @@ class MainController
                 break;
             case 'profile':
                 require_once "views/ProfileView.php";
-                // Extract the email parameter from the URL
-                $emailParam = $_GET['email'] ?? null;
-
-                // URL-decode the email parameter if it exists
-                if ($emailParam !== null) {
-                    $userEmail = urldecode($emailParam);
-                } else {
-                    // Handle default behavior if the email parameter is not present or invalid
-                    $userEmail = ''; // Set a default value or handle the absence of the parameter
-                }
-
-                // Instantiate the ProfileView with the extracted email parameter
                 $page = new ProfileView($this->response, $userEmail);
+                // user meegeven en ophalen in profileView (net als de errors hieronder)
                 break;
             case 'login':
             case 'register':
                 //todo: contact errors
             case 'contact':
+            case 'edit_profile':
                 $page = $this->handleFormViewInst($this->response['page'], $errors);
                 break;
         }

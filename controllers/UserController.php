@@ -153,6 +153,10 @@ class UserController
         return false;
     }
 
+    public function getUserById()
+    {
+    }
+
     public function getAllUsers()
     {
         try {

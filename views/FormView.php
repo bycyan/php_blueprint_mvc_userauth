@@ -66,7 +66,7 @@ class FormView extends BodyView
                         'placeholder' => 'Enter your message',
                     ),
                 ];
-            case 'profile':
+            case 'edit_profile':
                 return [
                     'name' =>  array(
                         'type' => 'name',
@@ -101,10 +101,11 @@ class FormView extends BodyView
                 echo '<h3>Ask your question</h3>';
                 $this->formHelper->showForm('contact');
                 break;
-            case 'profile':
+            case 'edit_profile':
                 echo '<h3>Profile</h3>';
-                var_dump($_SESSION['user']);
-                $this->formHelper->showForm('profile');
+                echo 'ID:';
+                var_dump($_SESSION['user']['id']);
+                $this->formHelper->showForm('edit_profile');
                 break;
             default:
                 break;

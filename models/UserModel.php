@@ -52,7 +52,6 @@ class UserModel extends Database
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         try {
-            //UPDATE `users` SET `email` = 'John@email.com' WHERE `users`.`id` = 71;
             $sqlQuery = "UPDATE users SET name = :name, email = :email, password = :password WHERE `users`.`id` = :id";
             $data = [
                 ':id' => $userId,
@@ -67,17 +66,17 @@ class UserModel extends Database
         }
     }
 
-    //DELETE
-    public function deleteUser($userId)
-    {
-        try {
-            $sqlQuery = "DELETE FROM users WHERE id = :id";
-            $data = [':id' => $userId];
-            $stmt = $this->deleteData($sqlQuery, $data);
-            // return $stmt->rowCount() > 0;
-            return $stmt;
-        } catch (PDOException $e) {
-            throw new Exception("Error: " . $e->getMessage());
-        }
-    }
+    // //DELETE
+    // public function deleteUser($userId)
+    // {
+    //     try {
+    //         $sqlQuery = "DELETE FROM users WHERE id = :id";
+    //         $data = [':id' => $userId];
+    //         $stmt = $this->deleteData($sqlQuery, $data);
+    //         // return $stmt->rowCount() > 0;
+    //         return $stmt;
+    //     } catch (PDOException $e) {
+    //         throw new Exception("Error: " . $e->getMessage());
+    //     }
+    // }
 }
